@@ -1,0 +1,551 @@
+# Função objetivo
+f <- function(x,y){
+  ((0.6*exp( -(((x-2)^2 ) + ((y-4)^2))/2 )
+  + 0.25*exp( -(((x-5)^2 ) + ((y-2)^2))/2 ) + 
+    0.15*exp( -(((x-3)^2 ) + ((y-6)^2))/2 )))
+}
+
+# Gerar dados
+x <- seq(-1, 9, by = 0.2)
+y <- seq(-1, 9, by = 0.2)
+z <- outer(x, y, f)
+
+# Gráfico da superfície
+persp(x, y, z, phi = 30, theta = -45, col = "yellow", shade = 0.00000001, ticktype = "detailed")
+
+# Gráfico de contorno e calor
+filled.contour(x,y,z, plot.axes = {
+  axis(1)
+  axis(2)
+  contour(x,y,z, add = TRUE, lwd = 2)
+}
+,nlevels = 20)
+
+# Criar um gráfico de superfície 3D
+library(plotly)
+plot <- plot_ly(x = x, y = y, z = z, type = "surface", colorscale = "Viridis", reversescale =T)
+plot
+
+# Máximo global (2, 4)
+# 0.6126886
+f(2, 4)
+
+# Máximo local (5, 2)
+# 0.2509089
+f(5, 2)
+
+# Máximo local (3, 6)
+# 0.1992623
+f(3, 6)
+
+dados <- data.frame(
+  Máximo_Global = c("f(2, 4)", "0.6126886"),
+  Máximo_Local = c("f(5, 2)", "0.2509089"),
+  Máximo_Local = c("f(3, 6)", "0.1992623")
+)
+
+# Imprimir a tabela usando kable
+library(knitr)
+knitr::kable(dados)
+
+# função objetivo a OTIMIZAR
+f.Objetivo <- function(x){
+  (0.6*exp( -(((x[1]-2)^2 ) + ((x[2]-4)^2))/2 )
+  + 0.25*exp( -(((x[1]-5)^2 ) + ((x[2]-2)^2))/2 ) + 
+    0.15*exp( -(((x[1]-3)^2 ) + ((x[2]-6)^2))/2 ))
+}
+
+# valor inicial deve ser um vetor de pontos iniciais (x,y)
+(optim( c(0,0), f.Objetivo, control = list(fnscale = -1) )$par)
+
+optim( c(0,0), f.Objetivo, control = list(fnscale = -1) )$par
+optim( c(2,4), f.Objetivo, control = list(fnscale = -1) )$par
+optim( c(5,2), f.Objetivo, control = list(fnscale = -1) )$par
+optim( c(3,6), f.Objetivo, control = list(fnscale = -1) )$par
+
+contour(x,y,z, nlevels = 20)
+xi <- runif(1000, min = -1, max = 9)
+yi <- runif(1000, min = -1, max = 9)
+
+for (k in c(1:1000)) {
+  result <- optim( c( xi[k] , yi[k] ), f.Objetivo, control = list(fnscale = -1) )$par
+  
+  if( (4.9 < result[1]) && (result[1] < 5.1) ){
+    arrows( xi[k] , yi[k], result[1], result[2], length = 0.05, col = "green")
+    points(xi[k] , yi[k], pch = ".", cex = 1.8, col = c("blue"))
+  }
+
+  
+  if( (1.9 < result[1]) && (result[1] < 2.1) ){
+    arrows( xi[k] , yi[k], result[1], result[2], length = 0.05, col = "pink")
+    points(xi[k] , yi[k], pch = ".", cex = 1.8, col = c("red"))
+  }
+}
+contour(x,y,z, nlevels = 20, add = TRUE)
+
+metodos <- c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN")
+
+for (i in 1:length(metodos)) {
+  print(optim( c(0,0), f.Objetivo,method = metodos[i], control = list(fnscale = -1))$par)
+}
+
+for (i in 1:length(metodos)) {
+  print(optim( c(2,4), f.Objetivo,method = metodos[i], control = list(fnscale = -1))$par)
+}
+
+for (i in 1:length(metodos)) {
+  print(optim( c(5,2), f.Objetivo,method = metodos[i], control = list(fnscale = -1))$par)
+}
+
+for (i in 1:length(metodos)) {
+  print(optim( c(3,6), f.Objetivo,method = metodos[i], control = list(fnscale = -1))$par)
+}
+
+run <- 1000
+xi <- runif(run, min = -1, max = 9)
+yi <- runif(run, min = -1, max = 9)
+
+categoria <- character(run)
+
+grafico.metodo <- function(vet){
+  
+  for (m in 1:length(vet)) {
+    
+    contour(x,y,z, nlevels = 20, main = vet[m])
+    
+    for (k in c(1:run)) {
+      result <- optim( c( xi[k] , yi[k] ), f.Objetivo, method = vet[m], control = list(fnscale = -1) )$par
+      
+      if( (4.9 < result[1]) && (result[1] < 5.1) ){
+        arrows( xi[k] , yi[k], result[1], result[2], length = 0.05, 
+                col = "green")
+        categoria[k] <- "Local"
+        points(xi[k] , yi[k], pch = ".", cex = 1.8, col = c("blue"))
+      }
+      else{
+        if( (1.9 < result[1]) && (result[1] < 2.1) ){
+        arrows( xi[k] , yi[k], result[1], result[2], length = 0.05, 
+                col = "pink")
+        categoria[k] <- "Global"
+        points(xi[k] , yi[k], pch = ".", cex = 1.8, col = c("red"))
+      }else{
+        categoria[k] <- "Fora"
+      }
+        }
+    }
+    contour(x,y,z, nlevels = 20, add = TRUE)
+    
+    tabela <-table(categoria, useNA = "ifany")
+    cat("Método: ",vet[m],"\n" )
+    print(tabela)
+    
+    G<-sum(categoria=="Global")
+    L<-sum(categoria=="Local")
+    F<-sum(categoria=="Fora")
+    T<-G+L
+    cat("\n")
+    cat("Proporção Entre Global e Local:  ","\n" )
+    cat( round((G/T)*100, 1) ,"% : " ,"Global\n")
+    cat( round((L/T)*100, 1) ,"% : " ,"Local")
+    cat("\n")
+    
+  }
+  
+  }
+
+grafico.metodo(metodos)
+
+generate_new_solution <- function(current_solution, a, b) {
+  # Faça as alterações necessárias na solução atual para gerar uma nova solução vizinha
+  
+  # Alterar um valor aleatório em uma posição da solução atual
+  n <- length(current_solution)
+  new_solution <- current_solution
+  
+  # Selecionar aleatoriamente uma posição da solução para ser alterada
+  position <- sample(1:n, 1)
+  
+  # Gerar um novo valor para essa posição
+  # Defina os limites adequados para o seu problema (a,b)
+  new_value <- runif(1, min = a, max = b)
+  
+  # Atualizar a nova solução com o novo valor na posição selecionada
+  new_solution[position] <- new_value
+  
+  return(new_solution)
+}
+
+simulated_annealing <- function(initial_solution, cost_function, a, b, max_iterations,
+                                initial_temperature, cooling_rate) {
+  
+  current_solution <- initial_solution
+  best_solution <- initial_solution
+  
+  current_cost <- cost_function(current_solution)
+  best_cost <- current_cost
+  
+  temperature <- initial_temperature
+  
+  for (i in 1:max_iterations) {
+    # Gerar uma nova solução POSSIVEL DENTRO DOS LIMITES (a,b)
+    new_solution <- generate_new_solution(current_solution, a, b)
+    
+    new_cost <- cost_function(new_solution)
+    
+    delta <- new_cost - current_cost
+    
+    if (delta < 0 || exp(-delta/temperature) > runif(1)) {  # Aceitar a nova solução com probabilidade
+      
+      # A probabilidade aumenta a medida em que for menor a variação de energia (DELTA)
+      
+      # Quando a temperatura decresce, diminui a frequência de aceitação de soluções com grande
+      # variação de delta, ou seja, soluções muito piores que a solução atual. 
+      # Esta probabilidade tende a zero quando a temperatura se aproxima do ponto de solidificação.
+      
+      # Mesmo apresentando um valor pior que o da solução atual, uma nova solução pode ser aceita de forma probabilística.
+      
+      current_solution <- new_solution
+      current_cost <- new_cost
+    }
+    
+    if (new_cost < best_cost) {
+      best_solution <- new_solution
+      best_cost <- new_cost
+    }
+    
+    temperature <- temperature * cooling_rate
+  }
+  
+  return(best_solution)
+}
+
+# Definir a função de custo
+f <- function(x) {
+  y = -((2**( -2*( (x-0.1)/0.9 )**2 ))*(sin(5*pi*x))**6)
+  y
+}
+
+# Definir parâmetros : 
+
+initial_solution <- c(.5) 
+# Solução inicial
+
+max_iterations <- 1000
+# Número máximo de iterações
+
+initial_temperature <- 100
+# Temperatura inicial
+
+cooling_rate <- 0.95
+# Taxa de resfriamento
+
+a=0
+b=1
+# Intervalo onde a funçao esta definida
+
+# Executar o algoritmo de Simulated Annealing
+best_solution <- simulated_annealing(initial_solution, f,a,b, 
+                                     max_iterations, initial_temperature, cooling_rate)
+
+best_solution
+# Soluçao de menor custo
+
+curve(f, from = a, to = b)
+points(x=best_solution, y=f(best_solution), col="red")
+
+f <- function(x) -(-(x - 2)*(x - 3) + 3)
+curve(f, from = 0, to = 4)
+
+# Definir parâmetros
+initial_solution <- c(.5)  # Solução inicial
+max_iterations <- 1000  # Número máximo de iterações
+initial_temperature <- 100  # Temperatura inicial
+cooling_rate <- 0.95  # Taxa de resfriamento
+a=0
+b=4
+
+# Executar o algoritmo de Simulated Annealing
+best_solution <- simulated_annealing(initial_solution, f, a, b, 
+                                     max_iterations, initial_temperature, cooling_rate)
+
+best_solution
+curve(f, from = a, to = b)
+points(x=best_solution, y=f(best_solution), col="red")
+
+# Algoritmo Simulated Annealing
+simulated_annealing <- function(f, x_init, y_init, temp_init, temp_final, 
+                                cooling_rate, iterations) {
+  # Inicialização
+  x_best <- x_init
+  y_best <- y_init
+  x_current <- x_init
+  y_current <- y_init
+  temp_current <- temp_init
+  
+  caminho.x=numeric(iterations)
+  caminho.y=numeric(iterations)
+  
+  # Loop principal
+  for (i in 1:iterations) {
+    # Gerar um ponto vizinho aleatório
+    x_new <- x_current + runif(1, -1, 1)
+    y_new <- y_current + runif(1, -1, 1)
+    
+    # Calcular a diferença de energia entre o ponto atual e o ponto vizinho
+    energy_diff <- f(x_new, y_new) - f(x_current, y_current)
+    
+    # Aceitar o ponto vizinho se a diferença de energia for negativa
+    if (energy_diff < 0) {
+      x_current <- x_new
+      y_current <- y_new
+      
+      # Verificar se o novo ponto é o melhor encontrado até agora
+      if (f(x_current, y_current) < f(x_best, y_best)) {
+        
+        caminho.x[i]=x_best
+        caminho.y[i]=y_best
+        
+        x_best <- x_current
+        y_best <- y_current
+      }
+    } else {
+      # Aceitar o ponto vizinho com uma probabilidade baseada na temperatura atual
+      prob_accept <- exp(-energy_diff / temp_current)
+      if (runif(1) < prob_accept) {
+        x_current <- x_new
+        y_current <- y_new
+      }
+    }
+    
+    # Atualizar a temperatura
+    temp_current <- temp_current * cooling_rate
+    temp_current <- max(temp_current, temp_final)
+  }
+  
+  caminho.x[iterations]=x_best
+  caminho.y[iterations]=y_best
+  
+  # Retornar o melhor ponto encontrado
+  return(list(caminhoy = caminho.y, caminhox = caminho.x, x = x_best, y = y_best, value = f(x_best, y_best)))
+}
+
+# Função objetivo
+f <- function(x, y) {
+  -((0.6 * exp(-(((x - 2)^2) + ((y - 4)^2))/2) +
+       0.25 * exp(-(((x - 5)^2) + ((y - 2)^2))/2) +
+       0.15 * exp(-(((x - 3)^2) + ((y - 6)^2))/2)))
+}
+
+# Configuração dos parâmetros
+x_init <- 0
+y_init <- 0
+temp_init <- 100
+temp_final <- 0.1
+cooling_rate <- 0.95
+iterations <- 10000
+
+# Executar o algoritmo
+result <- simulated_annealing(f, x_init, y_init, temp_init, temp_final, 
+                              cooling_rate, iterations)
+
+# Imprimir o resultado
+cat("Melhor ponto encontrado: x =", result$x, ", y =", result$y, "\n")
+cat("Valor da função no melhor ponto encontrado:", result$value, "\n")
+
+x <- seq(-1, 9, by = 0.2)
+y <- seq(-1, 9, by = 0.2)
+z <- outer(x, y, f)
+
+# gráfico
+contour(x,y,z)
+
+points(x = result$x , y = result$y , col = "red")
+
+points(x = 0 , y = 0, col = "blue")
+
+lines(result$caminhox, result$caminhoy, col="green")
+
+library(plotly)
+
+# Gerar dados
+x <- seq(-1, 9, by = 0.2)
+y <- seq(-1, 9, by = 0.2)
+z <- outer(x, y, f)
+
+# Criar um gráfico de superfície 3D
+plot <- plot_ly(x = x, y = y, z = z, type = "surface", colorscale = "Viridis")
+
+# Adicionar pontos vermelhos
+
+plot <- add_markers(plot, x = result$y, y = result$x, z = result$value, color = I("red"))
+
+# Adicionar ponto azul
+plot <- add_markers(plot, x = 0, y = 0, z = f(0, 0), color = I("blue"))
+
+plot
+
+library(ggplot2)
+
+# Dados simulados para exemplo
+x <- seq(-1, 9, by = 0.2)
+y <- seq(-1, 9, by = 0.2)
+z <- outer(x, y, f)
+
+# Criar um data frame com os resultados
+result_df <- data.frame(x = result$x, y = result$y, 
+                        caminhox = result$caminhox, caminhoy = result$caminhoy)
+
+# Criar data frame com os valores de x, y e z
+df <- expand.grid(x = x, y = y)
+df$z <- as.vector(z)
+
+# Gráfico
+plot <- ggplot() +
+  geom_contour(data = df, aes(x, y, z = z), color = "black") +
+  geom_point(data = result_df, aes(x, y), color = "red") +
+  geom_point(data = data.frame(x = 0, y = 0), aes(x, y), color = "blue") +
+  geom_line(data = result_df, aes(caminhox, caminhoy), color = "green")
+
+#plot
+
+library(gganimate)
+
+
+animacao <- plot +
+  transition_reveal(result$caminhoy)
+  #transition_reveal(result$caminhox)
+  #transition_reveal(f(result$caminhox,result$caminhoy))
+  #transition_reveal(-f(result$caminhox,result$caminhoy))
+  #transition_reveal(1:10000)
+
+
+animate(animacao, fps = 60)
+
+animacao <- plot +
+  #transition_reveal(result$caminhoy)
+  transition_reveal(result$caminhox)
+  #transition_reveal(f(result$caminhox,result$caminhoy))
+  #transition_reveal(-f(result$caminhox,result$caminhoy))
+  #transition_reveal(1:10000)
+
+
+animate(animacao, fps = 60)
+
+animacao <- plot +
+  #transition_reveal(result$caminhoy)
+  #transition_reveal(result$caminhox)
+  transition_reveal(f(result$caminhox,result$caminhoy))
+  #transition_reveal(-f(result$caminhox,result$caminhoy))
+  #transition_reveal(1:10000)
+
+
+animate(animacao, fps = 60)
+
+animacao <- plot +
+  #transition_reveal(result$caminhoy)
+  #transition_reveal(result$caminhox)
+  #transition_reveal(f(result$caminhox,result$caminhoy))
+  transition_reveal(-f(result$caminhox,result$caminhoy))
+  #transition_reveal(1:10000)
+
+
+animate(animacao, fps = 60)
+
+animacao <- plot +
+  #transition_reveal(result$caminhoy)
+  #transition_reveal(result$caminhox)
+  #transition_reveal(f(result$caminhox,result$caminhoy))
+  #transition_reveal(-f(result$caminhox,result$caminhoy))
+  transition_reveal(1:10000)
+
+
+animate(animacao, fps = 60)
+
+# Configuração dos parâmetros
+x_init <- 2
+y_init <- 4
+temp_init <- 100
+temp_final <- 0.1
+cooling_rate <- 0.95
+iterations <- 10000
+
+# Executar o algoritmo
+result <- simulated_annealing(f, x_init, y_init, temp_init, temp_final, 
+                              cooling_rate, iterations)
+
+# Imprimir o resultado
+cat("Melhor ponto encontrado: x =", result$x, ", y =", result$y, "\n")
+cat("Valor da função no melhor ponto encontrado:", result$value, "\n")
+
+# Configuração dos parâmetros
+x_init <- 5
+y_init <- 2
+temp_init <- 100
+temp_final <- 0.1
+cooling_rate <- 0.95
+iterations <- 10000
+
+# Executar o algoritmo
+result <- simulated_annealing(f, x_init, y_init, temp_init, temp_final, 
+                              cooling_rate, iterations)
+
+# Imprimir o resultado
+cat("Melhor ponto encontrado: x =", result$x, ", y =", result$y, "\n")
+cat("Valor da função no melhor ponto encontrado:", result$value, "\n")
+
+# Configuração dos parâmetros
+x_init <- 3
+y_init <- 6
+temp_init <- 100
+temp_final <- 0.1
+cooling_rate <- 0.95
+iterations <- 10000
+
+# Executar o algoritmo
+result <- simulated_annealing(f, x_init, y_init, temp_init, temp_final, 
+                              cooling_rate, iterations)
+
+# Imprimir o resultado
+cat("Melhor ponto encontrado: x =", result$x, ", y =", result$y, "\n")
+cat("Valor da função no melhor ponto encontrado:", result$value, "\n")
+
+contour(x,y,z, nlevels = 20)
+xi <- runif(1000, min = -1, max = 9)
+yi <- runif(1000, min = -1, max = 9)
+
+for (k in c(1:1000)) {
+  result <- simulated_annealing(f, x_init, y_init, temp_init, temp_final, 
+                              cooling_rate, iterations)
+  
+  if( (4.9 < result$x) && (result$x < 5.1) ){
+        arrows( xi[k] , yi[k], result$x, result$y, length = 0.05, 
+                col = "green")
+        categoria[k] <- "Local"
+        points(xi[k] , yi[k], pch = ".", cex = 1.8, col = c("blue"))
+      }
+      else{
+        if( (1.9 < result$x) && (result$x < 2.1) ){
+        arrows( xi[k] , yi[k], result$x, result$y, length = 0.05, 
+                col = "pink")
+        categoria[k] <- "Global"
+        points(xi[k] , yi[k], pch = ".", cex = 1.8, col = c("red"))
+      }else{
+        categoria[k] <- "Fora"
+      }
+        }
+    }
+contour(x,y,z, nlevels = 20, add = TRUE)
+
+tabela <-table(categoria, useNA = "ifany")
+
+print(tabela)
+    
+    G<-sum(categoria=="Global")
+    L<-sum(categoria=="Local")
+    F<-sum(categoria=="Fora")
+    T<-G+L
+    cat("\n")
+    cat("Proporção Entre Global e Local:  ","\n" )
+    cat( round((G/T)*100, 1) ,"% : " ,"Global\n")
+    cat( round((L/T)*100, 1) ,"% : " ,"Local")
+    cat("\n")
