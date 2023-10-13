@@ -1,0 +1,134 @@
+@article{bessegato2014,
+  author = {Bessegato, Lupércio and Quinino, Roberto and Pereira, Augusto},
+  year = {2014},
+  month = {01},
+  pages = {564-574},
+  title = {Planejamento Econômico de Controle On-line por Atributo em Presença de Erros de Classificação},
+  volume = {6},
+  journal = {Produção \& Engenharia},
+  doi = {10.18407/issn.1983-9952.2014.v6.n1.p564-574}
+}
+
+@inproceedings{bessegato2016,
+  author = {Bessegato, Lupércio and Pereira, Augusto and Quinino, Roberto},
+  year = {2016},
+  month = {10},
+  title = {Planejamento de Controle On-Line por Atributo, em Presença de Erros de Classificação: Uma Abordagem Semi-Econômica}
+}
+
+@Book{plotly2020,
+  author = {Carson Sievert},
+  title = {Interactive Web-Based Data Visualization with R, plotly,
+    and shiny},
+  publisher = {Chapman and Hall/CRC},
+  year = {2020},
+  isbn = {9781138331457},
+  url = {https://plotly-r.com},
+}
+
+@Manual{stats2022,
+  title = {R: A Language and Environment for Statistical Computing},
+  author = {{R Core Team}},
+  organization = {R Foundation for Statistical Computing},
+  address = {Vienna, Austria},
+  year = {2022},
+  url = {https://www.R-project.org/},
+}
+
+@Manual{gganimate2022,
+  title = {gganimate: A Grammar of Animated Graphics},
+  author = {Thomas Lin Pedersen and David Robinson},
+  year = {2022},
+  note = {R package version 1.0.8},
+  url = {https://CRAN.R-project.org/package=gganimate},
+}
+
+@Book{ggplot22016,
+  author = {Hadley Wickham},
+  title = {ggplot2: Elegant Graphics for Data Analysis},
+  publisher = {Springer-Verlag New York},
+  year = {2016},
+  isbn = {978-3-319-24277-4},
+  url = {https://ggplot2.tidyverse.org},
+}
+
+@book{cortez2014modern,
+  author = {Cortez, Paulo},
+  title = {Modern Optimization with R},
+  year = {2014},
+  publisher = {Springer},
+  address = {New York},
+}
+
+@book{michalewicz2013solve,
+  author = {Michalewicz, Zbigniew and Fogel, David B.},
+  title = {How to Solve It: Modern Heuristics},
+  year = {2013},
+  publisher = {Springer Science \& Business Media},
+  address = {London},
+}
+
+@online{carneiro2020algoritmos,
+  author = {Carneiro, André Luiz de Carvalho},
+  title = {Algoritmos de Otimização: Hill Climbing e Simulated Annealing},
+  year = {2020},
+  url = {https://medium.com/data-hackers/algoritmos-de-otimiza%C3%A7%C3%A3o-hill-climbing-e-simulated-annealing-3803061f66f0},
+  note = {Acesso em: 18/10/2022},
+}
+
+@online{r_optim_documentation,
+  title = {optim function - R Documentation},
+  author = {{R Core Team}},
+  year = {2022},
+  url = {https://www.rdocumentation.org/packages/stats/versions/4.2.0/topics/optim},
+  note = {Acesso em: \today},
+}
+
+@online{r_persp_function,
+  title = {persp function - R Documentation},
+  author = {{R Core Team}},
+  year = {2022},
+  url = {https://www.rdocumentation.org/packages/graphics/versions/4.2.0/topics/persp},
+  note = {Acesso em: \today},
+}
+
+@online{r_filled_contour_documentation,
+  title = {filled.contour function - R Documentation},
+  author = {{R Core Team}},
+  year = {2022},
+  url = {https://www.rdocumentation.org/packages/graphics/versions/4.2.0/topics/filled.contour},
+  note = {Acesso em: \today},
+}
+
+@online{github_notebook,
+  title = {Computação Bio - Algoritmos de Busca},
+  author = {Cavalcante, Álvaro},
+  year = {2022},
+  url = {https://github.com/AlvaroCavalcante/algoritmos-busca/blob/master/Computa%C3%A7%C3%A3o%20bio.ipynb},
+  note = {Acesso em: \today},
+}
+
+@book{hillier_lieberman,
+  author = {Hillier, Frederick S. and Lieberman, Gerald J.},
+  title = {Introdução à Pesquisa Operacional},
+  year = {2006},
+  publisher = {McGraw-Hill},
+  address = {São Paulo},  
+  edition = {8ª ed.},  
+}
+
+@online{wiki_simulated_annealing,
+  title = {Simulated Annealing},
+  author = {{Wikipedia contributors}},
+  year = {2022},
+  url = {https://pt.wikipedia.org/wiki/Simulated_annealing},
+  note = {Acesso em: \today},
+}
+
+@online{slides_sa,
+  title = {Simulated Annealing},
+  author = {Adair Santa Catarina},
+  year = {2023},
+  url = {https://www.inf.unioeste.br/~adair/MOA/Notas%20de%20Aula/Slides%2003%20-%20Simulated%20Annealing.pdf},
+  note = {Acesso em: \today},
+}
